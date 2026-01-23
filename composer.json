@@ -18,7 +18,6 @@
         "laravel/framework": "^12"
     },
     "require-dev": {
-        "ecphp/php-conventions": "^1.0",
         "guzzlehttp/guzzle": "^7.9",
         "nyholm/psr7": "^1.8",
         "orchestra/testbench": "10",
