@@ -8,12 +8,13 @@ A CAS bundle for Laravel.
     composer require ecphp/laravel-cas
 ```
 
-`config/app.php`
+`bootstrap/providers.php`
 
 ```php
-    'providers' => [
+    return [
+        ...
         EcPhp\LaravelCas\Providers\AppServiceProvider::class,
-    ],
+    ];
 ```
 
 `config/auth.php`
@@ -33,15 +34,16 @@ A CAS bundle for Laravel.
     ],
 ```
 
-`app/Http/Kernel.php`
+`bootstrap/app.php`
 
 ```php
-    protected $middlewareGroups = [
-        'web' => [
-            \EcPhp\LaravelCas\Middleware\CasAuthenticator::class
-        ],
+    use EcPhp\LaravelCas\Middleware\CasAuthenticator;
+    ->withMiddleware(function (Middleware $middleware): void {
         ...
-    ];
+        $middleware->web(append: [
+            CasAuthenticator::class,
+        ]);
+    })
 ```
 
 `app/Providers/AppServiceProvider.php`

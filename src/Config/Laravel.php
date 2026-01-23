@@ -11,74 +11,31 @@ declare(strict_types=1);
 
 namespace EcPhp\LaravelCas\Config;
 
-use EcPhp\CasLib\Configuration\Properties as PsrCasConfiguration;
+use EcPhp\CasLib\Configuration\Properties as CasProperties;
 use EcPhp\CasLib\Contract\Configuration\PropertiesInterface;
-use Illuminate\Routing\Router;
+use const FILTER_VALIDATE_URL;
 use Illuminate\Routing\Router as RouterInterface;
-use ReturnTypeWillChange;
 use Symfony\Component\HttpFoundation\ParameterBag;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
-use const FILTER_VALIDATE_URL;
-
 final class Laravel implements PropertiesInterface
 {
-    private PropertiesInterface $cas;
-
-    private RouterInterface $router;
+    private PropertiesInterface $properties;
 
     public function __construct(
-        ParameterBag $parameterBag,
-        Router $router
+        ParameterBag $properties,
+        private readonly RouterInterface $router
     ) {
-        $this->router = $router;
-        $this->cas = new PsrCasConfiguration(
+        $this->properties = new CasProperties(
             $this->routeToUrl(
-                $parameterBag->all()
+                $properties->all()
             )
         );
     }
 
-    public function all(): array
+    public function jsonSerialize(): array
     {
-        return $this->cas->all();
-    }
-
-    /**
-     * @param mixed $offset
-     */
-    #[ReturnTypeWillChange]
-    public function offsetExists($offset): bool
-    {
-        return $this->cas->offsetExists($offset);
-    }
-
-    /**
-     * @param mixed $offset
-     *
-     * @return array<string, mixed>|mixed
-     */
-    #[ReturnTypeWillChange]
-    public function offsetGet($offset)
-    {
-        return $this->cas->offsetGet($offset);
-    }
-
-    /**
-     * @param mixed $offset
-     * @param mixed $value
-     */
-    public function offsetSet($offset, $value): void
-    {
-        $this->cas->offsetSet($offset, $value);
-    }
-
-    /**
-     * @param mixed $offset
-     */
-    public function offsetUnset($offset): void
-    {
-        $this->cas->offsetUnset($offset);
+        return $this->properties->jsonSerialize();
     }
 
     /**
